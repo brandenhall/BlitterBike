@@ -103,11 +103,11 @@ class BlitterBike():
 		self.startIndex = self.im.tell()
 
 		# open the socket server
-#		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#		self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-#		self.sock.bind((HOST, PORT))
-#		self.sock.listen(1)
-#		self.conn, self.addr = self.sock.accept()
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		self.sock.bind((HOST, PORT))
+		self.sock.listen(1)
+		self.conn, self.addr = self.sock.accept()
 
 		last_time = time.time()
 		self.index = 0
@@ -116,9 +116,9 @@ class BlitterBike():
 		while True:
 			self.draw()
 
-#			data = self.conn.recv(1)
-#			if data: 
-#				self.conn.sendall(data)
+			data = self.conn.recv(1)
+			if data: 
+				self.conn.sendall(data)
 
 			new_time = time.time()
 			# see how many milliseconds we have to sleep for
@@ -128,10 +128,9 @@ class BlitterBike():
         			time.sleep(sleep_time)
     			last_time = new_time
 
-#			break
 
 	def cleanup(self):
-#		self.sock.close()
+		self.sock.close()
 		pass
 
 
