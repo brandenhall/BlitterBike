@@ -1,0 +1,132 @@
+2012-05-16 00:02:55-0400 [-] Log opened.
+2012-05-16 00:02:55-0400 [-] twistd 11.1.0 (/System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python 2.7.1) starting up.
+2012-05-16 00:02:55-0400 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2012-05-16 00:02:55-0400 [-] BlitterBikeServerFactory starting on 31337
+2012-05-16 00:02:55-0400 [-] Starting factory <blitterbike.BlitterBikeServerFactory instance at 0x109604dd0>
+2012-05-16 00:02:57-0400 [-] STARTING PLAY!
+2012-05-16 00:02:57-0400 [-] Unhandled Error
+	Traceback (most recent call last):
+	  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/threading.py", line 503, in __bootstrap
+	    self.__bootstrap_inner()
+	  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/threading.py", line 530, in __bootstrap_inner
+	    self.run()
+	  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/threading.py", line 483, in run
+	    self.__target(*self.__args, **self.__kwargs)
+	--- <exception caught here> ---
+	  File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/python/threadpool.py", line 207, in _worker
+	    result = context.call(ctx, function, *args, **kwargs)
+	  File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/python/context.py", line 118, in callWithContext
+	    return self.currentContext().callWithContext(ctx, func, *args, **kw)
+	  File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/python/context.py", line 81, in callWithContext
+	    return func(*args,**kw)
+	  File "/Users/bhall/Documents/Lab/Blitter Bike/dev/blitterbike.py", line 87, in run
+	    im = self.mode.update()
+	  File "/Users/bhall/Documents/Lab/Blitter Bike/dev/modes/play.py", line 49, in update
+	    self.nextFrame()
+	  File "/Users/bhall/Documents/Lab/Blitter Bike/dev/modes/play.py", line 77, in nextFrame
+	    self.im.seek(self.im.tell() + 1)
+	  File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PIL/GifImagePlugin.py", line 118, in seek
+	    while self.data():
+	  File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PIL/GifImagePlugin.py", line 64, in data
+	    return self.fp.read(ord(s))
+	exceptions.AttributeError: 'NoneType' object has no attribute 'read'
+	
+2012-05-16 00:04:03-0400 [-] Received SIGTERM, shutting down.
+2012-05-16 00:04:03-0400 [-] (TCP Port 31337 Closed)
+2012-05-16 00:04:03-0400 [-] Stopping factory <blitterbike.BlitterBikeServerFactory instance at 0x109604dd0>
+2012-05-16 00:04:03-0400 [-] Main loop terminated.
+2012-05-16 00:04:03-0400 [-] Server Shut Down.
+2012-05-16 00:04:04-0400 [-] Log opened.
+2012-05-16 00:04:04-0400 [-] twistd 11.1.0 (/System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python 2.7.1) starting up.
+2012-05-16 00:04:04-0400 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2012-05-16 00:04:04-0400 [-] BlitterBikeServerFactory starting on 31337
+2012-05-16 00:04:04-0400 [-] Starting factory <blitterbike.BlitterBikeServerFactory instance at 0x10681edd0>
+2012-05-16 00:04:05-0400 [-] STARTING PLAY!
+2012-05-16 00:04:38-0400 [-] Received SIGTERM, shutting down.
+2012-05-16 00:04:38-0400 [-] (TCP Port 31337 Closed)
+2012-05-16 00:04:38-0400 [-] Stopping factory <blitterbike.BlitterBikeServerFactory instance at 0x10681edd0>
+2012-05-16 00:04:38-0400 [-] Main loop terminated.
+2012-05-16 00:04:38-0400 [-] Server Shut Down.
+2012-05-16 00:04:39-0400 [-] Log opened.
+2012-05-16 00:04:39-0400 [-] twistd 11.1.0 (/System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python 2.7.1) starting up.
+2012-05-16 00:04:39-0400 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2012-05-16 00:04:39-0400 [-] BlitterBikeServerFactory starting on 31337
+2012-05-16 00:04:39-0400 [-] Starting factory <blitterbike.BlitterBikeServerFactory instance at 0x10d388dd0>
+2012-05-16 00:04:40-0400 [-] STARTING PLAY!
+2012-05-16 00:04:41-0400 [-] REPEAT!
+2012-05-16 00:04:42-0400 [-] REPEAT!
+2012-05-16 00:04:43-0400 [-] REPEAT!
+2012-05-16 00:04:43-0400 [-] REPEAT!
+2012-05-16 00:04:44-0400 [-] REPEAT!
+2012-05-16 00:04:45-0400 [-] REPEAT!
+2012-05-16 00:04:46-0400 [-] REPEAT!
+2012-05-16 00:04:46-0400 [-] REPEAT!
+2012-05-16 00:04:47-0400 [-] Received SIGTERM, shutting down.
+2012-05-16 00:04:47-0400 [-] (TCP Port 31337 Closed)
+2012-05-16 00:04:47-0400 [-] Stopping factory <blitterbike.BlitterBikeServerFactory instance at 0x10d388dd0>
+2012-05-16 00:04:47-0400 [-] Main loop terminated.
+2012-05-16 00:04:47-0400 [-] Server Shut Down.
+2012-05-16 00:08:45-0400 [-] Log opened.
+2012-05-16 00:08:45-0400 [-] twistd 11.1.0 (/System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python 2.7.1) starting up.
+2012-05-16 00:08:45-0400 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2012-05-16 00:08:45-0400 [-] BlitterBikeServerFactory starting on 31337
+2012-05-16 00:08:45-0400 [-] Starting factory <blitterbike.BlitterBikeServerFactory instance at 0x100d77dd0>
+2012-05-16 00:08:45-0400 [-] Traceback (most recent call last):
+2012-05-16 00:08:45-0400 [-]   File "/usr/bin/twistd", line 19, in <module>
+2012-05-16 00:08:45-0400 [-]     run()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/scripts/twistd.py", line 27, in run
+2012-05-16 00:08:45-0400 [-]     app.run(runApp, ServerOptions)
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/application/app.py", line 652, in run
+2012-05-16 00:08:45-0400 [-]     runApp(config)
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/scripts/twistd.py", line 23, in runApp
+2012-05-16 00:08:45-0400 [-]     _SomeApplicationRunner(config).run()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/application/app.py", line 390, in run
+2012-05-16 00:08:45-0400 [-]     self.postApplication()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/scripts/_twistd_unix.py", line 208, in postApplication
+2012-05-16 00:08:45-0400 [-]     self.startApplication(self.application)
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/scripts/_twistd_unix.py", line 317, in startApplication
+2012-05-16 00:08:45-0400 [-]     service.IService(application).privilegedStartService()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/application/service.py", line 277, in privilegedStartService
+2012-05-16 00:08:45-0400 [-]     service.privilegedStartService()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/application/internet.py", line 105, in privilegedStartService
+2012-05-16 00:08:45-0400 [-]     self._port = self._getPort()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/application/internet.py", line 133, in _getPort
+2012-05-16 00:08:45-0400 [-]     'listen%s' % (self.method,))(*self.args, **self.kwargs)
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/internet/posixbase.py", line 431, in listenTCP
+2012-05-16 00:08:45-0400 [-]     p.startListening()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/internet/tcp.py", line 633, in startListening
+2012-05-16 00:08:45-0400 [-]     self.factory.doStart()
+2012-05-16 00:08:45-0400 [-]   File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/twisted/internet/protocol.py", line 53, in doStart
+2012-05-16 00:08:45-0400 [-]     self.startFactory()
+2012-05-16 00:08:45-0400 [-]   File "/Users/bhall/Documents/Lab/Blitter Bike/dev/blitterbike.py", line 247, in startFactory
+2012-05-16 00:08:45-0400 [-]     self.blitterbike.start()
+2012-05-16 00:08:45-0400 [-]   File "/Users/bhall/Documents/Lab/Blitter Bike/dev/blitterbike.py", line 58, in start
+2012-05-16 00:08:45-0400 [-]     module = __import__(modname,locals(),[],-1)
+2012-05-16 00:08:45-0400 [-]   File "/Users/bhall/Documents/Lab/Blitter Bike/dev/modes/play.py", line 59
+2012-05-16 00:08:45-0400 [-]     if self.gifIndex == len(self.gifList)
+2012-05-16 00:08:45-0400 [-]                                         ^
+2012-05-16 00:08:45-0400 [-] SyntaxError: invalid syntax
+2012-05-16 00:09:06-0400 [-] Log opened.
+2012-05-16 00:09:06-0400 [-] twistd 11.1.0 (/System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python 2.7.1) starting up.
+2012-05-16 00:09:06-0400 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2012-05-16 00:09:06-0400 [-] BlitterBikeServerFactory starting on 31337
+2012-05-16 00:09:06-0400 [-] Starting factory <blitterbike.BlitterBikeServerFactory instance at 0x105748dd0>
+2012-05-16 00:09:07-0400 [-] STARTING PLAY!
+2012-05-16 00:10:29-0400 [-] Received SIGTERM, shutting down.
+2012-05-16 00:10:29-0400 [-] (TCP Port 31337 Closed)
+2012-05-16 00:10:29-0400 [-] Stopping factory <blitterbike.BlitterBikeServerFactory instance at 0x105748dd0>
+2012-05-16 00:10:29-0400 [-] Main loop terminated.
+2012-05-16 00:10:29-0400 [-] Server Shut Down.
+2012-05-16 00:10:30-0400 [-] Log opened.
+2012-05-16 00:10:30-0400 [-] twistd 11.1.0 (/System/Library/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python 2.7.1) starting up.
+2012-05-16 00:10:30-0400 [-] reactor class: twisted.internet.selectreactor.SelectReactor.
+2012-05-16 00:10:30-0400 [-] BlitterBikeServerFactory starting on 31337
+2012-05-16 00:10:30-0400 [-] Starting factory <blitterbike.BlitterBikeServerFactory instance at 0x105a56dd0>
+2012-05-16 00:10:31-0400 [-] STARTING PLAY!
+2012-05-16 00:10:57-0400 [-] STARTING BIKE!
+2012-05-16 00:11:13-0400 [-] STARTING PLAY!
+2012-05-16 00:11:24-0400 [-] Received SIGTERM, shutting down.
+2012-05-16 00:11:24-0400 [-] (TCP Port 31337 Closed)
+2012-05-16 00:11:24-0400 [-] Stopping factory <blitterbike.BlitterBikeServerFactory instance at 0x105a56dd0>
+2012-05-16 00:11:24-0400 [-] Main loop terminated.
+2012-05-16 00:11:24-0400 [-] Server Shut Down.
