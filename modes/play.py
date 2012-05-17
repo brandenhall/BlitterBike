@@ -81,6 +81,7 @@ class PlayMode:
 			updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
+			log.msg("SPECIAL!!!")
 			self.flipFlag != self.flipFlag
 
 
