@@ -168,7 +168,7 @@ class BlitterBike:
         self.bootFrame = Image.new("RGBA", (32, 32), (0,0,0))
 
         self.lastBootFrame = next = self.bootImage.convert("RGBA")
-        self.bootFrame.paste(next, next.getbbox(), mask=next)
+        self.bootFrame.paste(next, next.getbbox())
         self.bootStartIndex = self.bootImage.tell()
 
         if self.delayTimer != None:
@@ -194,7 +194,7 @@ class BlitterBike:
             next = self.bootImage.convert("RGBA")
             
             self.bootFrame = Image.new("RGBA", (32, 32), (0,0,0))
-            self.bootFrame.paste(next, next.getbbox(), mask=next)
+            self.bootFrame.paste(next, next.getbbox())
 
 
             self.lastBootFrame = next
