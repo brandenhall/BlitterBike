@@ -105,7 +105,6 @@ class PlayMode:
 
 		next = self.im.convert("RGBA")
 		
-		self.frame = Image.new("RGBA", (32, 32), (0,0,0))
 		self.frame.paste(next, next.getbbox(), mask=next)
 
 
