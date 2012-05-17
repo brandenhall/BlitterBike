@@ -57,8 +57,8 @@ class PlayMode:
 
 		if result != None:
 			if self.flipFlag:
-				im = result.transpose(Image.FLIP_LEFT_RIGHT)
-				result = im
+				log.msg("flipping...")
+				result = result.transpose(Image.FLIP_LEFT_RIGHT)
 
 			result = result.convert("RGB").getdata()
 
