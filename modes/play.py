@@ -1,6 +1,9 @@
 import blitterbike
 import glob
 import time
+import random
+from twisted.python import log
+
 try:
 	from PIL import Image
 	from PIL import ImageEnhance
@@ -9,7 +12,7 @@ except ImportError:
 	import Image
 	import ImageEnhance
 	import ImageOps
-from twisted.python import log
+
 
 class PlayMode:
 	def getBootGif(self):
@@ -36,6 +39,7 @@ class PlayMode:
 
 		log.msg("STARTING PLAY!")
 		self.gifList = glob.glob("gifs/play/*.gif")
+		random.shuffle(self.gifList, random.random)
 
 		log.msg(self.gifList)
 
@@ -98,6 +102,19 @@ class PlayMode:
 			self.gifIndex -= 1
 			if self.gifIndex == -1:
 				self.gifIndex = len(self.gifList) - 1
+
+			updateFlag = True
+
+		if button == blitterbike.UP_BUTTON:
+			self.gifIndex += 5
+			self.gifIndex %= len(self.gifList)
+
+			updateFlag = True
+
+		if button == blitterBike.DOWN_BUTTON:
+			self.gifIndex -= 5
+			if self.gifIndex < 0:
+				self.gifIndex += len(self.gifList)
 
 			updateFlag = True
 
