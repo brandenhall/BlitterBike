@@ -90,10 +90,10 @@ class PlayMode:
 			updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
-			self.flipFlag != self.flipFlag
+			self.flipFlag = not self.flipFlag
 
 		if button == blitterbike.H_BUTTON:
-			self.bwFlag != self.bwFlag
+			self.bwFlag = not self.bwFlag
 
 
 		if updateFlag:
