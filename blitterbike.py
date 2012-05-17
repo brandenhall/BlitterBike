@@ -114,10 +114,12 @@ class BlitterBike:
         self.loadModeBootGif(self.modeList[self.modeIndex].getBootGif())
 
     def onButtonDown(self, button):
-        self.mode.onButtonDown(button)
+        if self.mode != None:
+            self.mode.onButtonDown(button)
 
     def onButtonUp(self, button):
-        self.mode.onButtonUp(button)
+        if self.mode != None:
+            self.mode.onButtonUp(button)
 
     def blitTk(self, im):
         pass
