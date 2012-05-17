@@ -97,6 +97,7 @@ class BlitterBike:
                     self.blit(im)
 
     def stop(self):
+        self.clear()
         self.isRunning = False
 
     def readSensor(self):

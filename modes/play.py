@@ -27,6 +27,8 @@ class PlayMode:
 		log.msg("STARTING PLAY!")
 		self.gifList = glob.glob("gifs/play/*.gif")
 
+		log.msg(self.gifList)
+
 		self.loadingFlag = True
 		self.loadGif(self.gifList[self.gifIndex])
 		self.loadingFlag = False
