@@ -66,7 +66,7 @@ class PlayMode:
 
 			if self.bwFlag:
 				enhancer = ImageEnhance.Color(result)
-				enhancer.enhance(0)
+				result = enhancer.enhance(0)
 
 			result = result.convert("RGB").getdata()
 
