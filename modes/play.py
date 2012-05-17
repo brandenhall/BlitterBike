@@ -4,9 +4,11 @@ import time
 try:
 	from PIL import Image
 	from PIL import ImageEnhance
+	from PIL import ImageOps
 except ImportError:
 	import Image
 	import ImageEnhance
+	import ImageOps
 from twisted.python import log
 
 class PlayMode:
@@ -18,6 +20,7 @@ class PlayMode:
 		self.bwFlag = False
 		self.flipFlag = False
 		self.scratchFlag = False
+		self.invertFlag = False
 
 		self.gifList = []
 		self.gifIndex = 0
@@ -62,6 +65,8 @@ class PlayMode:
 					result = self.frame
 
 		if result != None:
+			result = result.convert("RGB")
+
 			if self.mirrorFlag:
 				result = result.transpose(Image.FLIP_LEFT_RIGHT)
 
@@ -72,7 +77,10 @@ class PlayMode:
 				enhancer = ImageEnhance.Color(result)
 				result = enhancer.enhance(0)
 
-			result = result.convert("RGB").getdata()
+			if self.invertFlag:
+				result = ImageOps.invert(result)
+
+			result = result.getdata()
 
 		return result
 
@@ -103,7 +111,10 @@ class PlayMode:
 			self.flipFlag = not self.flipFlag
 
 		if button == blitterbike.D_BUTTON:
-			self.scratchFlag = True		
+			self.scratchFlag = True
+
+		if button == blitterbike.C_BUTTON:
+			self.invertFlag = not self.invertFlag		
 
 
 		if updateFlag:
