@@ -55,7 +55,7 @@ class PlayMode:
 					self.nextFrame()
 					result = frame
 
-		if flipFlag:
+		if self.flipFlag:
 			result = result.transpose(Image.FLIP_LEFT_RIGHT)
 
 		return result.convert("RGB").getdata()
@@ -78,7 +78,7 @@ class PlayMode:
 			updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
-			flipFlag != flipFlag
+			self.flipFlag != self.flipFlag
 
 
 		if updateFlag:
