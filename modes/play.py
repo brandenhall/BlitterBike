@@ -119,28 +119,28 @@ class PlayMode:
 			self.delay = 30
 
 	def nextFrame(self):
-		try:
-			self.im.seek(self.im.tell() + 1)
-		except EOFError:
-			self.im.seek(self.startIndex)
+		if self.im != None:
+			try:
+				self.im.seek(self.im.tell() + 1)
+			except EOFError:
+				self.im.seek(self.startIndex)
 
-		if self.im:
 			self.im.palette.dirty = 1
 			self.im.palette.rawmode = "RGB"
 
-		next = self.im.convert("RGBA")
-		
-		self.frame.paste(next, next.getbbox(), mask=next)
+			next = self.im.convert("RGBA")
+			
+			self.frame.paste(next, next.getbbox(), mask=next)
 
 
-		self.lastFrame = next
+			self.lastFrame = next
 
-		try:
-			self.delay = self.im.info['duration']
-		except KeyError:
-			self.delay = 100
+			try:
+				self.delay = self.im.info['duration']
+			except KeyError:
+				self.delay = 100
 
 
-		if self.delay < 20:
-			self.delay = 100
+			if self.delay < 20:
+				self.delay = 100
 
