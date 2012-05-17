@@ -111,7 +111,7 @@ class PlayMode:
 
 			updateFlag = True
 
-		if button == blitterBike.DOWN_BUTTON:
+		if button == blitterbike.DOWN_BUTTON:
 			self.gifIndex -= 5
 			if self.gifIndex < 0:
 				self.gifIndex += len(self.gifList)
