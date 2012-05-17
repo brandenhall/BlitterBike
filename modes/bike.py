@@ -27,6 +27,8 @@ class BikeMode:
 		log.msg("STARTING BIKE!")
 		self.gifList = glob.glob("gifs/bike/*.gif")
 
+		log.msg(self.gifList)
+
 		self.loadingFlag = True
 		self.loadGif(self.gifList[self.gifIndex])
 		self.loadingFlag = False
@@ -41,7 +43,7 @@ class BikeMode:
 		if not self.im == None:
 			if self.newFlag:
 				self.newFlag = False
-				result = self.frame
+				result = self.frame.convert("RGB").getdata()
 
 			else:
 				currentTime = int(round(time.time() * 1000))
@@ -50,7 +52,7 @@ class BikeMode:
 				if elapsed >= self.delay and self.delay > 0:
 					self.lastTime = currentTime
 					self.nextFrame()
-					result = self.frame
+					result = self.frame.convert("RGB").getdata()
 
 		return result
 
@@ -74,7 +76,7 @@ class BikeMode:
 
 		if updateFlag:
 			self.im = None
-			loadGif(self.gifList[self.gifIndex])
+			self.loadGif(self.gifList[self.gifIndex])
 
 	def onButtonUp(self, button):
 		pass
@@ -105,7 +107,6 @@ class BikeMode:
 
 		next = self.im.convert("RGBA")
 		
-		self.frame = Image.new("RGBA", (32, 32), (0,0,0))
 		self.frame.paste(next, next.getbbox(), mask=next)
 
 
