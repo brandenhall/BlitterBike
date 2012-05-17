@@ -14,8 +14,10 @@ class PlayMode:
 		return "gifs/play.gif"
 
 	def start(self):
-		self.flipFlag = False
+		self.mirrorFlag = False
 		self.bwFlag = False
+		self.flipFlag = False
+		self.scratchFlag = False
 
 		self.gifList = []
 		self.gifIndex = 0
@@ -60,9 +62,11 @@ class PlayMode:
 					result = self.frame
 
 		if result != None:
-			if self.flipFlag:
-				log.msg("flipping...")
+			if self.mirrorFlag:
 				result = result.transpose(Image.FLIP_LEFT_RIGHT)
+
+			if self.flipFlag:
+				result = result.transpose(Image.FLIP_TOP_BOTTOM)
 
 			if self.bwFlag:
 				enhancer = ImageEnhance.Color(result)
@@ -90,10 +94,16 @@ class PlayMode:
 			updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
-			self.flipFlag = not self.flipFlag
+			self.mirrorFlag = not self.mirrorFlag
+
+		if button == blitterbike.G_BUTTON:
+			self.bwFlag = not self.bwFlag
 
 		if button == blitterbike.H_BUTTON:
-			self.bwFlag = not self.bwFlag
+			self.flipFlag = not self.flipFlag
+
+		if button == blitterbike.D_BUTTON:
+			self.scratchFlag = True		
 
 
 		if updateFlag:
@@ -120,10 +130,15 @@ class PlayMode:
 
 	def nextFrame(self):
 		if self.im != None:
-			try:
-				self.im.seek(self.im.tell() + 1)
-			except EOFError:
+
+			if self.scratchFlag:
 				self.im.seek(self.startIndex)
+				self.scratchFlag = False
+			else:
+				try:
+					self.im.seek(self.im.tell() + 1)
+				except EOFError:
+					self.im.seek(self.startIndex)
 
 			self.im.palette.dirty = 1
 			self.im.palette.rawmode = "RGB"
