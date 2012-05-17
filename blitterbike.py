@@ -2,10 +2,14 @@ from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from twisted.internet import reactor
 from twisted.python import log
-from PIL import Image
 from threading import Timer
-from Tkinter import Tk, Canvas, Frame, BOTH
 import inspect, os, sys, pkgutil, socket, time
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 
 MODE_BUTTON = "mode"
 SPECIAL_BUTTON = "special"
@@ -72,11 +76,14 @@ class BlitterBike:
             import spi
             self.spi_conn = spi.SPI(2, 0)
             self.spi_conn.msh = 1000000
-            self.clear()
 
             self.blit = self.blitScreen
             reactor.callInThread(self.readSensor)
+
+            self.clear()
+
         else:
+	    from Tkinter import Tk, Canvas, Frame, BOTH	
             self.blit = self.blitTk
 
         self.onChangeMode()

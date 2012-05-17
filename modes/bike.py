@@ -1,7 +1,10 @@
 import blitterbike
 import glob
 import time
-from PIL import Image
+try:
+	from PIL import Image
+except ImportError:
+	import Image
 from twisted.python import log
 
 class BikeMode:

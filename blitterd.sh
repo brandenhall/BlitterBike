@@ -9,7 +9,7 @@
 ### END INIT INFO
 
 logger "blitterd: Start script executed"
-BLITTER_BIKE_PATH="/Users/bhall/Documents/Lab/Blitter Bike/dev/"
+BLITTER_BIKE_PATH="/home/bhall/dev"
 export PYTHONPATH="$BLITTER_BIKE_PATH:$PYTHONPATH"
 
 case "$1" in

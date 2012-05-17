@@ -1,7 +1,10 @@
 import blitterbike
 import glob
 import time
-from PIL import Image
+try:
+	from PIL import Image
+except ImportError:
+	import Image
 from twisted.python import log
 
 class PlayMode:
@@ -38,7 +41,7 @@ class PlayMode:
 		if not self.im == None:
 			if self.newFlag:
 				self.newFlag = False
-				result = self.frame
+				result = self.frame.convert("RGB").getdata()
 
 			else:
 				currentTime = int(round(time.time() * 1000))
@@ -47,7 +50,7 @@ class PlayMode:
 				if elapsed >= self.delay and self.delay > 0:
 					self.lastTime = currentTime
 					self.nextFrame()
-					result = self.frame
+					result = self.frame.convert("RGB").getdata()
 
 		return result
 
@@ -71,7 +74,7 @@ class PlayMode:
 
 		if updateFlag:
 			self.im = None
-			loadGif(self.gifList[self.gifIndex])
+			self.loadGif(self.gifList[self.gifIndex])
 
 	def onButtonUp(self, button):
 		pass
