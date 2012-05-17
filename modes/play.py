@@ -3,8 +3,10 @@ import glob
 import time
 try:
 	from PIL import Image
+	from PIL import ImageEnhance
 except ImportError:
 	import Image
+	import ImageEnhance
 from twisted.python import log
 
 class PlayMode:
@@ -13,6 +15,8 @@ class PlayMode:
 
 	def start(self):
 		self.flipFlag = False
+		self.bwFlag = False
+
 		self.gifList = []
 		self.gifIndex = 0
 		self.gif = None
@@ -60,6 +64,10 @@ class PlayMode:
 				log.msg("flipping...")
 				result = result.transpose(Image.FLIP_LEFT_RIGHT)
 
+			if self.bwFlag:
+				enhancer = ImageEnhance.Color(result)
+				enhancer.enhance(0)
+
 			result = result.convert("RGB").getdata()
 
 		return result
@@ -82,10 +90,10 @@ class PlayMode:
 			updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
-			if self.flipFlag:
-				self.flipFlag = False
-			else:
-				self.flipFlag = True
+			self.flipFlag != self.flipFlag
+
+		if button == blitterbike.H_BUTTON:
+			self.bwFlag != self.bwFlag
 
 
 		if updateFlag:
