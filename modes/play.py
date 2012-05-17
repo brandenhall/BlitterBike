@@ -112,8 +112,9 @@ class PlayMode:
 		except EOFError:
 			self.im.seek(self.startIndex)
 
-		self.im.palette.dirty = 1
-		self.im.palette.rawmode = "RGB"
+		if self.im:
+			self.im.palette.dirty = 1
+			self.im.palette.rawmode = "RGB"
 
 		next = self.im.convert("RGBA")
 		
