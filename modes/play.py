@@ -58,7 +58,10 @@ class PlayMode:
 		if self.flipFlag:
 			result = result.transpose(Image.FLIP_LEFT_RIGHT)
 
-		return result.convert("RGB").getdata()
+		if result != None:
+			result = result.convert("RGB").getdata()
+
+		return result
 
 	def onButtonDown(self, button):
 		updateFlag = False
