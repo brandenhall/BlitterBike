@@ -192,10 +192,8 @@ class BlitterBike:
             self.bootImage.palette.rawmode = "RGB"
 
             next = self.bootImage.convert("RGBA")
-            
-            self.bootFrame = Image.new("RGBA", (32, 32), (0,0,0))
             self.bootFrame.paste(next, next.getbbox())
-
+            
 
             self.lastBootFrame = next
 
