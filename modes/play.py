@@ -44,7 +44,7 @@ class PlayMode:
 		if not self.im == None:
 			if self.newFlag:
 				self.newFlag = False
-				result = frame
+				result = self.frame
 
 			else:
 				currentTime = int(round(time.time() * 1000))
@@ -53,7 +53,7 @@ class PlayMode:
 				if elapsed >= self.delay and self.delay > 0:
 					self.lastTime = currentTime
 					self.nextFrame()
-					result = frame
+					result = self.frame
 
 		if self.flipFlag:
 			result = result.transpose(Image.FLIP_LEFT_RIGHT)
