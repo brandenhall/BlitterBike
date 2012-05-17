@@ -12,6 +12,7 @@ class PlayMode:
 		return "gifs/play.gif"
 
 	def start(self):
+		self.flipFlag = False
 		self.gifList = []
 		self.gifIndex = 0
 		self.gif = None
@@ -43,7 +44,7 @@ class PlayMode:
 		if not self.im == None:
 			if self.newFlag:
 				self.newFlag = False
-				result = self.frame.convert("RGB").getdata()
+				result = frame
 
 			else:
 				currentTime = int(round(time.time() * 1000))
@@ -52,9 +53,12 @@ class PlayMode:
 				if elapsed >= self.delay and self.delay > 0:
 					self.lastTime = currentTime
 					self.nextFrame()
-					result = self.frame.convert("RGB").getdata()
+					result = frame
 
-		return result
+		if flipFlag:
+			result = result.transpose(Image.FLIP_LEFT_RIGHT)
+
+		return result.convert("RGB").getdata()
 
 	def onButtonDown(self, button):
 		updateFlag = False
@@ -72,6 +76,9 @@ class PlayMode:
 				self.gifIndex = len(self.gifList) - 1
 
 			updateFlag = True
+
+		if button == blitterbike.SPECIAL_BUTTON:
+			flipFlag != flipFlag
 
 
 		if updateFlag:

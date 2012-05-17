@@ -100,6 +100,9 @@ class BlitterBike:
         self.clear()
         self.isRunning = False
 
+        if self.mode != None:
+            self.mode.stop()
+
     def readSensor(self):
         while self.isRunning:
             pass
