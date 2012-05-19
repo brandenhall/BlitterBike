@@ -16,7 +16,7 @@ except ImportError:
 
 class PlayMode (blitterbike.BlitterBikeMode):
 
-	def __init__():
+	def __init__(self):
 		self.bootGif = "gifs/play.gif"
 
 	def start(self):
