@@ -201,9 +201,11 @@ class BlitterBikeMode:
 
     def __init__(self):
         self.isBooting = False
+        self.lastTime = 0
 
     def boot(self):
         self.isBooting = True
+        self.lastTime = 0
 
         self.bootImage = Image.open(self.bootGif)
         self.bootFrame = Image.new("RGBA", (32, 32), (0,0,0))
