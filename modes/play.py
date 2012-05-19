@@ -6,11 +6,9 @@ from twisted.python import log
 
 try:
 	from PIL import Image
-	from PIL import ImageEnhance
 	from PIL import ImageOps
 except ImportError:
 	import Image
-	import ImageEnhance
 	import ImageOps
 
 
@@ -21,7 +19,6 @@ class PlayMode (blitterbike.BlitterBikeMode):
 
 	def start(self):
 		self.mirrorFlag = False
-		self.bwFlag = False
 		self.flipFlag = False
 		self.scratchFlag = False
 		self.invertFlag = False
@@ -51,7 +48,7 @@ class PlayMode (blitterbike.BlitterBikeMode):
 	def stop(self):
 		pass
 
-	def update(self):
+	def update(self, speed):
 
 		result = None
 
@@ -77,10 +74,6 @@ class PlayMode (blitterbike.BlitterBikeMode):
 
 			if self.flipFlag:
 				result = result.transpose(Image.FLIP_TOP_BOTTOM)
-
-			if self.bwFlag:
-				enhancer = ImageEnhance.Color(result)
-				result = enhancer.enhance(0)
 
 			if self.invertFlag:
 				result = ImageOps.invert(result)
@@ -124,7 +117,7 @@ class PlayMode (blitterbike.BlitterBikeMode):
 			self.mirrorFlag = not self.mirrorFlag
 
 		if button == blitterbike.G_BUTTON:
-			self.bwFlag = not self.bwFlag
+			pass
 
 		if button == blitterbike.H_BUTTON:
 			self.flipFlag = not self.flipFlag

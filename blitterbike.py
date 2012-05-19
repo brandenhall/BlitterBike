@@ -4,6 +4,7 @@ from twisted.internet import reactor
 from twisted.python import log
 from threading import Timer
 import inspect, os, sys, pkgutil, socket, time
+from multiprocessing import Process, Value
 
 try:
     from PIL import Image
@@ -80,29 +81,28 @@ class BlitterBike:
 
             self.blit = self.blitScreen
 
-            # setup the speed sensor
             open('/sys/kernel/debug/omap_mux/lcd_data0', 'wb').write("%X" % 39)
             try:
-              # check to see if the pin is already exported
-              open('/sys/class/gpio/gpio70/direction').read()
+                # check to see if the pin is already exported
+                open('/sys/class/gpio/gpio70/direction').read()
             except:
-              # it isn't, so export it
-              print("exporting GPIO 70")
-              open('/sys/class/gpio/export', 'w').write('70')
+                open('/sys/class/gpio/export', 'w').write('70')
 
             # set Port 8 Pin 3 for output
             open('/sys/class/gpio/gpio70/direction', 'w').write('in')
-            self.lastValue = 1
-            self.lastMagnet = 0
-            self.halfCirc = 23.56194490
 
-            reactor.callInThread(self.readSensor)
+            self.speed = Value("f", 0.0)
+            self.sensor = Process(target=self.readSensor, args=(self.speed,))
+            self.sensor.start()
+
+            self.isBlitterBike = True
 
             self.clear()
 
         else:
-	    from Tkinter import Tk, Canvas, Frame, BOTH	
+            from Tkinter import Tk, Canvas, Frame, BOTH	
             self.blit = self.blitTk
+            self.isBlitterBike = False;
 
         self.onChangeMode()
 
@@ -112,27 +112,43 @@ class BlitterBike:
                 if self.mode.isBooting:
                     im = self.mode.updateBoot()
                 else:
-                    im = self.mode.update()
+                    im = self.mode.update(self.speed.value)
             
                 if im != None:
                     self.blit(im)
 
     def stop(self):
-        self.clear()
         self.isRunning = False
+        self.sensor.terminate()
+        open('/sys/class/gpio/unexport', 'w').write('70')        
 
         if self.mode != None:
             self.mode.stop()
 
-    def readSensor(self):
-        while self.isRunning:
+        self.clear()
+
+    def readSensor(self, speed):
+        lastValue = 1
+        lastMagnet = 0
+        halfCirc = 23.56194490
+
+        while 1:
+
             value = int(open('/sys/class/gpio/gpio70/value', 'r').read())
+
             if value == 0 and lastValue == 1:
                 magnet = time.time()
                 if lastMagnet > 0:
-                    self.speed  =  (halfCirc/(magnet - lastMagnet))
+                    speed.value  =  (halfCirc/(magnet - lastMagnet))
                 lastMagnet = magnet
+            else:
+                speed.value *= 0.999
+
+                if speed.value < 5:
+                    speed.value = 0
+
             lastValue = value
+            time.sleep(0.005)
 
     def onChangeMode(self):
         self.mode.stop()
@@ -220,7 +236,7 @@ class BlitterBikeMode:
             self.bootDelay = 20
 
         if self.bootDelay < 20:
-            self.bootDelay = 20;
+            self.bootDelay = 100;
 
     def updateBoot(self):
 
@@ -230,8 +246,9 @@ class BlitterBikeMode:
             currentTime = int(round(time.time() * 1000))
             elapsed = currentTime - self.lastTime
 
-            if self.bootIndex == 1:
+            if self.bootIndex == 0:
                 result = self.bootFrame.convert("RGB").getdata()
+                self.bootIndex += 1
 
             elif elapsed >= self.bootDelay and self.bootDelay > 0:
                 self.lastTime = currentTime
@@ -254,11 +271,11 @@ class BlitterBikeMode:
             try:
                 self.bootDelay = self.bootImage.info['duration']
             except KeyError:
-                self.bootDelay = 20
+                self.bootDelay = 100
 
 
             if self.bootDelay < 20:
-                self.bootDelay = 20
+                self.bootDelay = 100
 
         except EOFError:
             self.isBooting = False
