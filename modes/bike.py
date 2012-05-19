@@ -7,9 +7,9 @@ except ImportError:
 	import Image
 from twisted.python import log
 
-class BikeMode:
-	def getBootGif(self):
-		return "gifs/bike.gif"
+class BikeMode(blitterbike.BlitterMode):
+	def __init__():
+		self.bootGif = "gifs/bike.gif"
 
 	def start(self):
 		self.gifList = []
@@ -57,29 +57,32 @@ class BikeMode:
 		return result
 
 	def onButtonDown(self, button):
-		updateFlag = False
 
-		if button == blitterbike.RIGHT_BUTTON:
-			self.gifIndex += 1
-			if self.gifIndex == len(self.gifList):
-				self.gifIndex = 0
+		if not self.isBooting:
+			updateFlag = False
 
-			updateFlag = True
+			if button == blitterbike.RIGHT_BUTTON:
+				self.gifIndex += 1
+				if self.gifIndex == len(self.gifList):
+					self.gifIndex = 0
 
-		if button == blitterbike.LEFT_BUTTON:
-			self.gifIndex -= 1
-			if self.gifIndex == -1:
-				self.gifIndex = len(self.gifList) - 1
+				updateFlag = True
 
-			updateFlag = True
+			if button == blitterbike.LEFT_BUTTON:
+				self.gifIndex -= 1
+				if self.gifIndex == -1:
+					self.gifIndex = len(self.gifList) - 1
+
+				updateFlag = True
 
 
-		if updateFlag:
-			self.im = None
-			self.loadGif(self.gifList[self.gifIndex])
+			if updateFlag:
+				self.im = None
+				self.loadGif(self.gifList[self.gifIndex])
 
 	def onButtonUp(self, button):
-		pass
+		if not self.isBooting:
+			pass
 
 	def loadGif(self, imagePath):
 		self.newFlag = True

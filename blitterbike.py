@@ -68,6 +68,7 @@ class BlitterBike:
         self.modeIndex = 0
         self.mode = self.modeList[self.modeIndex]
         self.delayTimer = None
+        self.speed = 0
 
         reactor.callInThread(self.run)
         self.isRunning = True
@@ -78,6 +79,23 @@ class BlitterBike:
             self.spi_conn.msh = 1000000
 
             self.blit = self.blitScreen
+
+            # setup the speed sensor
+            open('/sys/kernel/debug/omap_mux/lcd_data0', 'wb').write("%X" % 39)
+            try:
+              # check to see if the pin is already exported
+              open('/sys/class/gpio/gpio70/direction').read()
+            except:
+              # it isn't, so export it
+              print("exporting GPIO 70")
+              open('/sys/class/gpio/export', 'w').write('70')
+
+            # set Port 8 Pin 3 for output
+            open('/sys/class/gpio/gpio70/direction', 'w').write('in')
+            self.lastValue = 1
+            self.lastMagnet = 0
+            self.halfCirc = 23.56194490
+
             reactor.callInThread(self.readSensor)
 
             self.clear()
@@ -91,7 +109,10 @@ class BlitterBike:
     def run(self):
         while self.isRunning:
             if self.mode != None:
-                im = self.mode.update()
+                if self.mode.isBooting:
+                    im = self.mode.updateBoot()
+                else:
+                    im = self.mode.update()
             
                 if im != None:
                     self.blit(im)
@@ -105,7 +126,13 @@ class BlitterBike:
 
     def readSensor(self):
         while self.isRunning:
-            pass
+            value = int(open('/sys/class/gpio/gpio70/value', 'r').read())
+            if value == 0 and lastValue == 1:
+                magnet = time.time()
+                if lastMagnet > 0:
+                    self.speed  =  (halfCirc/(magnet - lastMagnet))
+                lastMagnet = magnet
+            lastValue = value
 
     def onChangeMode(self):
         self.mode.stop()
@@ -113,12 +140,10 @@ class BlitterBike:
         if self.modeIndex == len(self.modeList):
             self.modeIndex = 0
 
-        self.mode = None
-        self.loadModeBootGif(self.modeList[self.modeIndex].getBootGif())
+        self.mode = self.modeList[self.modeIndex]
+        self.mode.boot()
 
     def onButtonDown(self, button):
-        log.msg("BUTTON DOWN: " + button)
-
         if self.mode != None:
             self.mode.onButtonDown(button)
 
@@ -172,64 +197,85 @@ class BlitterBike:
 
         self.fill((0, 0, 0))
 
-    def loadModeBootGif(self, bootGif):
-        self.bootImage = Image.open(bootGif)
+class BlitterBikeMode:
+
+    def __init__(self):
+        self.isBooting = False
+
+    def boot(self):
+        self.isBooting = True
+
+        self.bootImage = Image.open(self.bootGif)
         self.bootFrame = Image.new("RGBA", (32, 32), (0,0,0))
 
-        self.lastBootFrame = next = self.bootImage.convert("RGBA")
+        next = self.bootImage.convert("RGBA")
         self.bootFrame.paste(next, next.getbbox())
-        self.bootStartIndex = self.bootImage.tell()
-
-        if self.delayTimer != None:
-            self.delayTimer.cancel()
+        self.bootIndex = 0
 
         try:
-            delay = self.bootImage.info['duration']
+            self.bootDelay = self.bootImage.info['duration']
         except KeyError:
-            delay = 30
+            self.bootDelay = 20
 
-        self.delayTimer = Timer(delay/1000, self.nextBootFrame)
-        self.delayTimer.daemon = True
-        self.delayTimer.start()
+        if self.bootDelay < 20:
+            self.bootDelay = 20;
 
-        self.drawBoot()
+    def updateBoot(self):
+
+        result = None
+
+        if not self.bootImage == None:
+            currentTime = int(round(time.time() * 1000))
+            elapsed = currentTime - self.lastTime
+
+            if self.bootIndex == 1:
+                result = self.bootFrame.convert("RGB").getdata()
+
+            elif elapsed >= self.bootDelay and self.bootDelay > 0:
+                self.lastTime = currentTime
+                self.nextBootFrame()
+                result = self.bootFrame.convert("RGB").getdata()
+
+        return result
 
     def nextBootFrame(self):
         try:
-            self.bootImage.seek(self.bootImage.tell() + 1)
+            self.bootImage.seek(self.im.tell() + 1)
+            self.bootIndex += 1
             self.bootImage.palette.dirty = 1
             self.bootImage.palette.rawmode = "RGB"
 
             next = self.bootImage.convert("RGBA")
-            self.bootFrame.paste(next, next.getbbox(), mask=next)
             
-
-            self.lastBootFrame = next
-
-            self.drawBoot()
+            self.bootFrame.paste(next, next.getbbox(), mask=next)
 
             try:
-                delay = self.bootImage.info['duration']
+                self.bootDelay = self.im.info['duration']
             except KeyError:
-                delay = 100
+                self.bootDelay = 20
 
 
-            if delay < 20:
-                delay = 100
-
-
-            self.delayTimer = Timer(delay/1000, self.nextBootFrame)
-            self.delayTimer.daemon = True
-            self.delayTimer.start()
+            if self.bootDelay < 20:
+                self.bootDelay = 20
 
         except EOFError:
+            self.isBooting = False
+            self.start()                   
 
-            # done playing the boot GIF, now start
-            self.mode = self.modeList[self.modeIndex]
-            self.mode.start()
+    def start(self):
+        pass
 
-    def drawBoot(self):
-        self.blit(self.bootFrame.convert("RGB").getdata())
+    def stop(self):
+        pass
+
+    def update(self):
+        pass
+
+    def onButtonDown(self, button):
+        pass
+
+    def onButtonUp(self, button):
+        pass
 
 class BlitterBikeServer(LineReceiver):
 

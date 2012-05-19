@@ -14,9 +14,10 @@ except ImportError:
 	import ImageOps
 
 
-class PlayMode:
-	def getBootGif(self):
-		return "gifs/play.gif"
+class PlayMode (blitterbike.BlitterMode):
+
+	def __init__():
+		self.bootGif = "gifs/play.gif"
 
 	def start(self):
 		self.mirrorFlag = False
