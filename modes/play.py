@@ -14,7 +14,7 @@ except ImportError:
 	import ImageOps
 
 
-class PlayMode (blitterbike.BlitterMode):
+class PlayMode (blitterbike.BlitterBikeMode):
 
 	def __init__():
 		self.bootGif = "gifs/play.gif"

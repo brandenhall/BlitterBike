@@ -7,7 +7,7 @@ except ImportError:
 	import Image
 from twisted.python import log
 
-class BikeMode(blitterbike.BlitterMode):
+class BikeMode(blitterbike.BlitterBikeMode):
 	def __init__():
 		self.bootGif = "gifs/bike.gif"
 
