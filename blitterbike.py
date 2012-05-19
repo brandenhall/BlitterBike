@@ -242,7 +242,7 @@ class BlitterBikeMode:
 
     def nextBootFrame(self):
         try:
-            self.bootImage.seek(self.im.tell() + 1)
+            self.bootImage.seek(self.bootImage.tell() + 1)
             self.bootIndex += 1
             self.bootImage.palette.dirty = 1
             self.bootImage.palette.rawmode = "RGB"
