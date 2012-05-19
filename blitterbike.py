@@ -252,7 +252,7 @@ class BlitterBikeMode:
             self.bootFrame.paste(next, next.getbbox(), mask=next)
 
             try:
-                self.bootDelay = self.im.info['duration']
+                self.bootDelay = self.bootImage.info['duration']
             except KeyError:
                 self.bootDelay = 20
 
