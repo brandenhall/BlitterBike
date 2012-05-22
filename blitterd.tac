@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')
+
 import os
 from twisted.application import service, internet
 from blitterbike import BlitterBikeServerFactory

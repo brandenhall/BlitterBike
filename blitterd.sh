@@ -16,7 +16,7 @@ case "$1" in
   start)
     logger "blitterd: Starting"
     echo "Starting blitterd..."
-    twistd -y "$BLITTER_BIKE_PATH/blitterd.tac" -l "$BLITTER_BIKE_PATH/blitterd.log" --pidfile "$BLITTER_BIKE_PATH/blitterd.pid"
+    /usr/local/bin/twistd -y "$BLITTER_BIKE_PATH/blitterd.tac" -l "$BLITTER_BIKE_PATH/blitterd.log" --pidfile "$BLITTER_BIKE_PATH/blitterd.pid"
     ;;
   stop)
     logger "blitterd: Stopping"

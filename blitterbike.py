@@ -3,13 +3,16 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet import reactor
 from twisted.python import log
 from threading import Timer
-import inspect, os, sys, pkgutil, socket, time
+
+import images2gif
+import inspect, os, sys, pkgutil, socket, time, datetime
 from multiprocessing import Process, Value
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageDraw, ImageFont, Image
 except ImportError:
-    import Image
+    import Image, ImageDraw, ImageFont, Image
+
 
 
 MODE_BUTTON = "mode"
@@ -164,7 +167,6 @@ class BlitterBike:
             self.mode.onButtonDown(button)
 
     def onButtonUp(self, button):
-        log.msg("BUTTON UP: " + button)
         if self.mode != None:
             self.mode.onButtonUp(button)
 
@@ -218,6 +220,8 @@ class BlitterBikeMode:
     def __init__(self):
         self.isBooting = False
         self.lastTime = 0
+        self.bootIndex = 0
+        self.bootImage = None
 
     def boot(self):
         self.isBooting = True
@@ -242,18 +246,21 @@ class BlitterBikeMode:
 
         result = None
 
-        if not self.bootImage == None:
-            currentTime = int(round(time.time() * 1000))
-            elapsed = currentTime - self.lastTime
+        try:
+            if not self.bootImage == None:
+                currentTime = int(round(time.time() * 1000))
+                elapsed = currentTime - self.lastTime
 
-            if self.bootIndex == 0:
-                result = self.bootFrame.convert("RGB").getdata()
-                self.bootIndex += 1
+                if self.bootIndex == 0:
+                    result = self.bootFrame.convert("RGB").getdata()
+                    self.bootIndex += 1
 
-            elif elapsed >= self.bootDelay and self.bootDelay > 0:
-                self.lastTime = currentTime
-                self.nextBootFrame()
-                result = self.bootFrame.convert("RGB").getdata()
+                elif elapsed >= self.bootDelay and self.bootDelay > 0:
+                    self.lastTime = currentTime
+                    self.nextBootFrame()
+                    result = self.bootFrame.convert("RGB").getdata()
+        except:
+            pass
 
         return result
 
@@ -302,16 +309,43 @@ class BlitterBikeServer(LineReceiver):
         self.blitterbike = blitterbike
 
     def lineReceived(self, command):
-        commandList = command.split(",")
+        commandList = command.split("|")
 
-        if commandList[0] == "d":
+        if commandList[0] == "c":
+            now = datetime.datetime.now()
+            name = "/home/bhall/dev/gifs/crawl/crawl_%d-%d-%d_%d:%d:%d.gif" % (now.year, now.month, now.day, now.hour, now.minute, now.second)
+            text = commandList[1]
+            font = ImageFont.truetype("/home/bhall/dev/" + commandList[2], 24)
+            fill = (int(commandList[3]), int(commandList[4]), int(commandList[5]))
+            frames = self.makeCrawl(text, font, fill, 2)
+            images2gif.writeGif(name, frames, subRectangles=False, duration=0.05, dispose=1)
+
+        elif commandList[0] == "d":
             if commandList[1] == MODE_BUTTON:
                 self.blitterbike.onChangeMode()
             else:
                 self.blitterbike.onButtonDown(commandList[1])
-        elif commandList[1] == "u":
+        elif commandList[0] == "u":
             if commandList[1] != MODE_BUTTON:
                 self.blitterbike.onButtonUp(commandList[1])
+
+    def makeCrawl(self, text, font, fill, step):
+        frames = []
+        im = Image.new('RGBA', (32, 32), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(im)
+        size = draw.textsize(text, font=font)
+        count = int((size[0] + 32) / step)
+        offset = 32
+
+
+        for i in range(count):
+            im = Image.new('RGB', (32, 32), (0,0,0))
+            draw = ImageDraw.Draw(im)
+            draw.text((offset, 3), text, font=font, fill=fill)
+            offset -= step
+            frames.append(im)
+
+        return frames
 
 
 class BlitterBikeServerFactory(Factory):

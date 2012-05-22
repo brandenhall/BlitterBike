@@ -2,6 +2,9 @@ import blitterbike
 import glob
 import time
 import random
+import os
+import sys
+from stat import S_ISREG, ST_MTIME, ST_MODE
 from twisted.python import log
 
 try:
@@ -12,15 +15,16 @@ except ImportError:
 	import ImageOps
 
 
-class BikeMode (blitterbike.BlitterBikeMode):
+class CrawlMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
-		self.bootGif = "/home/bhall/dev/gifs/bike.gif"
-		self.im = None
+		self.isBooting = False
+
+	def boot(self):
+		self.start()				
 
 	def start(self):
 		self.mirrorFlag = False
-		self.flipFlag = False
 		self.scratchFlag = False
 		self.invertFlag = False
 
@@ -29,18 +33,24 @@ class BikeMode (blitterbike.BlitterBikeMode):
 		self.gif = None
 		self.im = None
 		self.frame = None
-		self.lastFrame = None
-		self.startIndex = 0
 		self.lastTime = 0
 		self.delay = 0
 		self.newFlag = False
 		self.loadingFlag = False
+		self.sfxQueue = []
 
-		log.msg("BIKE MODE")
-		self.gifList = glob.glob("/home/bhall/dev/gifs/bike/*.gif")
-		random.shuffle(self.gifList, random.random)
+		log.msg("CRAWL MODE")
+		self.gifList = []
+		dirpath = "/home/bhall/dev/gifs/crawl/"
+		entries = (os.path.join(dirpath, fn) for fn in os.listdir(dirpath))
+		entries = ((os.stat(path), path) for path in entries)
 
-		log.msg(self.gifList)
+		# leave only regular files, insert creation date
+		entries = ((stat[ST_MTIME], path) for stat, path in entries if S_ISREG(stat[ST_MODE]))
+
+		for cdate, path in sorted(entries, reverse=True):
+			log.msg( "%d : %s" % (cdate, path))
+			self.gifList.append(dirpath + os.path.basename(path))
 
 		self.loadingFlag = True
 		self.loadGif(self.gifList[self.gifIndex])
@@ -59,29 +69,24 @@ class BikeMode (blitterbike.BlitterBikeMode):
 				result = self.frame
 
 			else:
+				currentTime = int(round(time.time() * 1000))
+				elapsed = currentTime - self.lastTime
 
-				if speed > 0:
-					currentTime = int(round(time.time() * 1000))
-					elapsed = currentTime - self.lastTime
-
-					if elapsed >= (12/speed) * 1000:
-						self.lastTime = currentTime
-						self.nextFrame()
-						result = self.frame
+				if elapsed >= self.delay and self.delay > 0:
+					self.lastTime = currentTime
+					self.nextFrame()
+					result = self.frame
 
 		if result != None:
 			result = result.convert("RGB")
 
+			if self.invertFlag:
+				result = ImageOps.invert(result)			
+
 			if self.mirrorFlag:
 				result = result.transpose(Image.FLIP_LEFT_RIGHT)
 
-			if self.flipFlag:
-				result = result.transpose(Image.FLIP_TOP_BOTTOM)
-
-			if self.invertFlag:
-				result = ImageOps.invert(result)
-
-			result = result.getdata()
+			result = result.getdata()	
 
 		return result
 
@@ -119,71 +124,63 @@ class BikeMode (blitterbike.BlitterBikeMode):
 		if button == blitterbike.SPECIAL_BUTTON:
 			self.mirrorFlag = not self.mirrorFlag
 
-		if button == blitterbike.G_BUTTON:
-			pass
-
-		if button == blitterbike.H_BUTTON:
-			self.flipFlag = not self.flipFlag
-
 		if button == blitterbike.D_BUTTON:
 			self.scratchFlag = True
 
-		if button == blitterbike.C_BUTTON:
-			self.invertFlag = not self.invertFlag		
+		if button == blitterbike.E_BUTTON:
+			self.start()
 
+		if button == blitterbike.C_BUTTON:
+			self.invertFlag = not self.invertFlag				
 
 		if updateFlag:
 			self.im = None
 			self.loadGif(self.gifList[self.gifIndex])
 
 	def onButtonUp(self, button):
-		pass
+		pass				
 
 	def loadGif(self, imagePath):
 		self.newFlag = True
 		self.im = Image.open(imagePath)
 		self.frame = Image.new("RGBA", (32, 32), (0,0,0))
 
-		self.lastFrame = next = self.im.convert("RGBA")
+		next = self.im.convert("RGBA")
 		self.frame.paste(next, next.getbbox(), mask=next)
-		self.startIndex = self.im.tell()
 		self.lastTime = int(round(time.time() * 1000))
 
 		try:
 			self.delay = self.im.info['duration']
 		except KeyError:
-			self.delay = 30
+			self.delay = 100
 
 	def nextFrame(self):
 		if self.im != None:
 
 			if self.scratchFlag:
-				self.im.seek(self.startIndex)
-				self.frame = Image.new("RGBA", (32, 32), (0,0,0))
+				self.im.seek(0)
 				self.scratchFlag = False
 			else:
 				try:
 					self.im.seek(self.im.tell() + 1)
-				except EOFError:
-					self.im.seek(self.startIndex)
+				except:
+					self.im.seek(0)
 					self.frame = Image.new("RGBA", (32, 32), (0,0,0))
 
-			self.im.palette.dirty = 1
-			self.im.palette.rawmode = "RGB"
-
-			next = self.im.convert("RGBA")
-			
-			self.frame.paste(next, next.getbbox(), mask=next)
-
-
-			self.lastFrame = next
-
 			try:
-				self.delay = self.im.info['duration']
-			except KeyError:
-				self.delay = 100
+				self.im.palette.dirty = 1
+				self.im.palette.rawmode = "RGB"
+
+				next = self.im.convert("RGBA")
+				self.frame.paste(next, next.getbbox(), mask=next)
+
+				try:
+					self.delay = self.im.info['duration']
+				except:
+					self.delay = 100
 
 
-			if self.delay < 20:
-				self.delay = 100
-
+				if self.delay < 20:
+					self.delay = 100
+			except:
+				pass
