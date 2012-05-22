@@ -134,6 +134,7 @@ class BlitterBike:
         lastValue = 1
         lastMagnet = 0
         halfCirc = 23.56194490
+        lastSpeed = 0
 
         while 1:
 
@@ -145,7 +146,9 @@ class BlitterBike:
                     speed.value  =  (halfCirc/(magnet - lastMagnet))
                 lastMagnet = magnet
             else:
-                speed.value *= 0.999
+
+                if speed.value < 15:
+                    speed.value *= 0.95
 
                 if speed.value < 5:
                     speed.value = 0

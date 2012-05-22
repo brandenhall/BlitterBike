@@ -25,8 +25,6 @@ while 1:
   # turn on USR1 and external LED
   value = int(open('/sys/class/gpio/gpio70/value', 'r').read())
   np = time.time()
-
-  print (np - cp)
   cp = np
 
 

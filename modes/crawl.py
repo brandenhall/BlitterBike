@@ -27,6 +27,7 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 		self.mirrorFlag = False
 		self.scratchFlag = False
 		self.invertFlag = False
+		self.updateFlag = False
 
 		self.gifList = []
 		self.gifIndex = 0
@@ -63,6 +64,11 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 
 		result = None
 
+		if self.updateFlag:
+			self.im = None
+			self.updateFlag = False
+			self.loadGif(self.gifList[self.gifIndex])		
+
 		if not self.im == None:
 			if self.newFlag:
 				self.newFlag = False
@@ -91,35 +97,36 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 		return result
 
 	def onButtonDown(self, button):
-		updateFlag = False
 
 		if button == blitterbike.RIGHT_BUTTON:
 			self.gifIndex += 1
 			if self.gifIndex == len(self.gifList):
 				self.gifIndex = 0
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.LEFT_BUTTON:
 			self.gifIndex -= 1
 			if self.gifIndex == -1:
 				self.gifIndex = len(self.gifList) - 1
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.UP_BUTTON:
-			self.gifIndex += 5
-			if self.gifIndex >= len(self.gifList):
-				self.gifIndex -= len(self.gifList)
+			if len(self.gifList) > 5:
+				self.gifIndex += 5
+				if self.gifIndex >= len(self.gifList):
+					self.gifIndex -= len(self.gifList)
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.DOWN_BUTTON:
-			self.gifIndex -= 5
-			if self.gifIndex < 0:
-				self.gifIndex += len(self.gifList)
+			if len(self.gifList) > 5:
+				self.gifIndex -= 5
+				if self.gifIndex < 0:
+					self.gifIndex += len(self.gifList)
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
 			self.mirrorFlag = not self.mirrorFlag
@@ -132,10 +139,6 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 
 		if button == blitterbike.C_BUTTON:
 			self.invertFlag = not self.invertFlag				
-
-		if updateFlag:
-			self.im = None
-			self.loadGif(self.gifList[self.gifIndex])
 
 	def onButtonUp(self, button):
 		pass				

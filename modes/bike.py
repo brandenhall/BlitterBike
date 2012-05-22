@@ -15,16 +15,31 @@ except ImportError:
 class BikeMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
+		self.fullSpeed = 90.0;
 		self.bootGif = "/home/bhall/dev/gifs/bike.gif"
+		self.gifPath = "/home/bhall/dev/gifs/bike/"
 		self.im = None
+		self.gifList = []
+		self.gifList.append({"gif":"boo.gif", "step":12, "wait":100, "loops":[{"speed":0.05, "start":0, "end":0}, {"speed":1.0, "start":1, "end":26}]})
+		self.gifList.append({"gif":"corgi.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":3}]})
+		self.gifList.append({"gif":"mario.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":2}]})
+		self.gifList.append({"gif":"megaman.gif", "step":12, "wait":300, "loops":[{"speed":0.02, "start":0, "end":6}, {"speed":0.65, "start":7, "end":10}, {"speed":1.0, "start":11, "end":29}]})
+		self.gifList.append({"gif":"nyan.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":11}]})
+		self.gifList.append({"gif":"pony_gallop.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":5}]})
+		self.gifList.append({"gif":"pony_run.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":3}]})
+		self.gifList.append({"gif":"rabbit.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":7}]})
+		self.gifList.append({"gif":"samus.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":9}]})
+		self.gifList.append({"gif":"sonic.gif", "step":6, "wait":200, "loops":[{"speed":0.02, "start":0, "end":7}, {"speed":0.5, "start":8, "end":15}, {"speed":0.75, "start":16, "end":19}, {"speed":1.0, "start":20, "end":23}]})
+		self.gifList.append({"gif":"yoshi.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":9}]})
+
 
 	def start(self):
 		self.mirrorFlag = False
 		self.flipFlag = False
 		self.scratchFlag = False
 		self.invertFlag = False
+		self.updateFlag = False
 
-		self.gifList = []
 		self.gifIndex = 0
 		self.gif = None
 		self.im = None
@@ -35,12 +50,10 @@ class BikeMode (blitterbike.BlitterBikeMode):
 		self.delay = 0
 		self.newFlag = False
 		self.loadingFlag = False
+		self.current = None
 
 		log.msg("BIKE MODE")
-		self.gifList = glob.glob("/home/bhall/dev/gifs/bike/*.gif")
 		random.shuffle(self.gifList, random.random)
-
-		log.msg(self.gifList)
 
 		self.loadingFlag = True
 		self.loadGif(self.gifList[self.gifIndex])
@@ -53,21 +66,42 @@ class BikeMode (blitterbike.BlitterBikeMode):
 
 		result = None
 
+		if self.updateFlag:
+			self.im = None
+			self.updateFlag = False
+			self.loadGif(self.gifList[self.gifIndex])		
+
 		if not self.im == None:
-			if self.newFlag:
+			if self.newFlag and self.frame != None:
 				self.newFlag = False
 				result = self.frame
 
 			else:
 
-				if speed > 0:
-					currentTime = int(round(time.time() * 1000))
-					elapsed = currentTime - self.lastTime
+				currentTime = int(round(time.time() * 1000))
+				elapsed = currentTime - self.lastTime				
 
-					if elapsed >= (12/speed) * 1000:
-						self.lastTime = currentTime
-						self.nextFrame()
-						result = self.frame
+				if len(self.current["loops"]) > 1:
+					if speed < self.current["loops"][0]["speed"]:
+						if elapsed > self.current["wait"]:
+							self.lastTime = currentTime
+							self.nextFrame(speed)
+							result = self.frame
+					else:
+						if elapsed >= (self.current["step"]/speed) * 1000:
+							self.lastTime = currentTime
+							self.nextFrame(speed)
+							result = self.frame						
+
+				else:	
+					if speed > 0:
+						currentTime = int(round(time.time() * 1000))
+						elapsed = currentTime - self.lastTime
+
+						if elapsed >= (self.current["step"]/speed) * 1000:
+							self.lastTime = currentTime
+							self.nextFrame(speed)
+							result = self.frame
 
 		if result != None:
 			result = result.convert("RGB")
@@ -86,35 +120,33 @@ class BikeMode (blitterbike.BlitterBikeMode):
 		return result
 
 	def onButtonDown(self, button):
-		updateFlag = False
-
 		if button == blitterbike.RIGHT_BUTTON:
 			self.gifIndex += 1
 			if self.gifIndex == len(self.gifList):
 				self.gifIndex = 0
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.LEFT_BUTTON:
 			self.gifIndex -= 1
 			if self.gifIndex == -1:
 				self.gifIndex = len(self.gifList) - 1
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.UP_BUTTON:
 			self.gifIndex += 5
 			if self.gifIndex >= len(self.gifList):
 				self.gifIndex -= len(self.gifList)
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.DOWN_BUTTON:
 			self.gifIndex -= 5
 			if self.gifIndex < 0:
 				self.gifIndex += len(self.gifList)
 
-			updateFlag = True
+			self.updateFlag = True
 
 		if button == blitterbike.SPECIAL_BUTTON:
 			self.mirrorFlag = not self.mirrorFlag
@@ -132,41 +164,60 @@ class BikeMode (blitterbike.BlitterBikeMode):
 			self.invertFlag = not self.invertFlag		
 
 
-		if updateFlag:
-			self.im = None
-			self.loadGif(self.gifList[self.gifIndex])
-
 	def onButtonUp(self, button):
 		pass
 
-	def loadGif(self, imagePath):
-		self.newFlag = True
+	def loadGif(self, info):
+
+		self.current = info
+		self.frame = None
+		imagePath = "%s%s" % (self.gifPath, self.current["gif"])
+
+		log.msg(imagePath)
 		self.im = Image.open(imagePath)
 		self.frame = Image.new("RGBA", (32, 32), (0,0,0))
 
 		self.lastFrame = next = self.im.convert("RGBA")
 		self.frame.paste(next, next.getbbox(), mask=next)
-		self.startIndex = self.im.tell()
 		self.lastTime = int(round(time.time() * 1000))
+		self.newFlag = True
 
-		try:
-			self.delay = self.im.info['duration']
-		except KeyError:
-			self.delay = 30
-
-	def nextFrame(self):
+	def nextFrame(self, speed):
 		if self.im != None:
 
-			if self.scratchFlag:
-				self.im.seek(self.startIndex)
+			try:
+				self.im.seek(self.im.tell() + 1)
+			except EOFError:
+				self.im.seek(0)
 				self.frame = Image.new("RGBA", (32, 32), (0,0,0))
-				self.scratchFlag = False
-			else:
+
+			percent = speed/self.fullSpeed
+
+			if percent > 1.0:
+				percent = 1.0
+
+			index = 0
+			while percent > self.current["loops"][index]["speed"]:
+				index += 1
+
+			start = self.current["loops"][index]["start"]
+			end = self.current["loops"][index]["end"]
+
+			while self.im.tell() > end:
 				try:
 					self.im.seek(self.im.tell() + 1)
 				except EOFError:
-					self.im.seek(self.startIndex)
+					self.im.seek(0)
 					self.frame = Image.new("RGBA", (32, 32), (0,0,0))
+
+			while self.im.tell() < start:
+				self.im.palette.dirty = 1
+				self.im.palette.rawmode = "RGB"
+
+				next = self.im.convert("RGBA")
+				
+				self.frame.paste(next, next.getbbox(), mask=next)				
+				self.im.seek(self.im.tell() + 1)
 
 			self.im.palette.dirty = 1
 			self.im.palette.rawmode = "RGB"
