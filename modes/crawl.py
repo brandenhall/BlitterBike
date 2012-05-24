@@ -18,10 +18,7 @@ except ImportError:
 class CrawlMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
-		self.isBooting = False
-
-	def boot(self):
-		self.start()				
+		self.bootGif = "/home/bhall/dev/gifs/crawl.gif"			
 
 	def start(self):
 		self.mirrorFlag = False
