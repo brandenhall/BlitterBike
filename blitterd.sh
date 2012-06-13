@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 ### BEGIN INIT INFO
 # Provides:          blitterbike
 # Required-Start:    $local_fs $remote_fs $network $syslog
@@ -9,19 +9,24 @@
 ### END INIT INFO
 
 logger "blitterd: Start script executed"
-BLITTER_BIKE_PATH="/home/bhall/dev"
-export PYTHONPATH="$BLITTER_BIKE_PATH:$PYTHONPATH"
+
+pushd `dirname $0` > /dev/null
+BLITTERBIKEPATH=`pwd -P`
+popd > /dev/null
+
+export PYTHONPATH="$BLITTERBIKEPATH:$PYTHONPATH"
+export BLITTERBIKEPATH="$BLITTERBIKEPATH"
 
 case "$1" in
   start)
     logger "blitterd: Starting"
     echo "Starting blitterd..."
-    /usr/local/bin/twistd -y "$BLITTER_BIKE_PATH/blitterd.tac" -l "$BLITTER_BIKE_PATH/blitterd.log" --pidfile "$BLITTER_BIKE_PATH/blitterd.pid"
+    /usr/local/bin/twistd -y "$BLITTERBIKEPATH/blitterd.tac" -l "$BLITTERBIKEPATH/blitterd.log" --pidfile "$BLITTERBIKEPATH/blitterd.pid"
     ;;
   stop)
     logger "blitterd: Stopping"
     echo "Stopping blitterd..."
-    kill `cat "$BLITTER_BIKE_PATH/blitterd.pid"`
+    kill `cat "$BLITTERBIKEPATH/blitterd.pid"`
     ;;
   *)
     logger "blitterd: Invalid usage"

@@ -14,9 +14,8 @@ except ImportError:
     import Image, ImageDraw, ImageFont, Image
 
 
-
+BLITTER_BIKE_PATH = os.environ["BLITTERBIKEPATH"]
 MODE_BUTTON = "mode"
-SPECIAL_BUTTON = "special"
 UP_BUTTON = "up"
 DOWN_BUTTON = "down"
 LEFT_BUTTON = "left"
@@ -30,6 +29,9 @@ E_BUTTON = "e"
 F_BUTTON = "f"
 G_BUTTON = "g"
 H_BUTTON = "h"
+
+SPEED_PREDICTOR = 1.2
+SPEED_DAMPING = 0.95
 
 GAMMA_TABLE =  [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
                 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
@@ -103,8 +105,6 @@ class BlitterBike:
             self.clear()
 
         else:
-            from Tkinter import Tk, Canvas, Frame, BOTH	
-            self.blit = self.blitTk
             self.isBlitterBike = False;
 
         self.onChangeMode()
@@ -135,6 +135,7 @@ class BlitterBike:
         lastMagnet = 0
         halfCirc = 23.56194490
         lastSpeed = 0
+        lastDelta = 0
 
         while 1:
 
@@ -143,12 +144,14 @@ class BlitterBike:
             if value == 0 and lastValue == 1:
                 magnet = time.time()
                 if lastMagnet > 0:
-                    speed.value  =  (halfCirc/(magnet - lastMagnet))
+                    lastDelta = magnet - lastMagnet      
+                    speed.value  =  (halfCirc/lastDelta)
+                    lastDelta *= SPEED_PREDICTOR
                 lastMagnet = magnet
             else:
 
-                if speed.value < 15:
-                    speed.value *= 0.95
+                if time.time() - lastMagnet > lastDelta:
+                    speed.value *= SPEED_DAMPING
 
                 if speed.value < 5:
                     speed.value = 0
@@ -310,15 +313,17 @@ class BlitterBikeServer(LineReceiver):
 
     def __init__(self, blitterbike):
         self.blitterbike = blitterbike
+        log.msg(BLITTER_BIKE_PATH)
 
     def lineReceived(self, command):
         commandList = command.split("|")
+	log.msg(command)
 
         if commandList[0] == "c":
             now = datetime.datetime.now()
-            name = "/home/bhall/dev/gifs/crawl/crawl_%d-%d-%d_%d:%d:%d.gif" % (now.year, now.month, now.day, now.hour, now.minute, now.second)
+            name = BLITTER_BIKE_PATH + "/gifs/crawl/crawl_%d-%d-%d_%d:%d:%d.gif" % (now.year, now.month, now.day, now.hour, now.minute, now.second)
             text = commandList[1]
-            font = ImageFont.truetype("/home/bhall/dev/" + commandList[2], 24)
+            font = ImageFont.truetype(BLITTER_BIKE_PATH + commandList[2], 24)
             fill = (int(commandList[3]), int(commandList[4]), int(commandList[5]))
             frames = self.makeCrawl(text, font, fill, 2)
             images2gif.writeGif(name, frames, subRectangles=False, duration=0.05, dispose=1)

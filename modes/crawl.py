@@ -18,7 +18,7 @@ except ImportError:
 class CrawlMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
-		self.bootGif = "/home/bhall/dev/gifs/crawl.gif"			
+		self.bootGif = blitterbike.BLITTER_BIKE_PATH + "/gifs/crawl.gif"			
 
 	def start(self):
 		self.mirrorFlag = False
@@ -39,7 +39,7 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 
 		log.msg("CRAWL MODE")
 		self.gifList = []
-		dirpath = "/home/bhall/dev/gifs/crawl/"
+		dirpath = blitterbike.BLITTER_BIKE_PATH + "/gifs/crawl/"
 		entries = (os.path.join(dirpath, fn) for fn in os.listdir(dirpath))
 		entries = ((os.stat(path), path) for path in entries)
 
@@ -125,7 +125,7 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 
 			self.updateFlag = True
 
-		if button == blitterbike.SPECIAL_BUTTON:
+		if button == blitterbike.A_BUTTON:
 			self.mirrorFlag = not self.mirrorFlag
 
 		if button == blitterbike.D_BUTTON:
@@ -134,7 +134,7 @@ class CrawlMode (blitterbike.BlitterBikeMode):
 		if button == blitterbike.E_BUTTON:
 			self.start()
 
-		if button == blitterbike.C_BUTTON:
+		if button == blitterbike.H_BUTTON:
 			self.invertFlag = not self.invertFlag				
 
 	def onButtonUp(self, button):

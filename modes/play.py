@@ -15,25 +15,20 @@ except ImportError:
 class PlayMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
-		self.bootGif = "/home/bhall/dev/gifs/play.gif"
-
-		self.sfxShree = {}
-		self.sfxShree["im"] = Image.open("/home/bhall/dev/gifs/sfx/shree.gif")
-		self.sfxShree["isFirst"] = False
-		self.sfxShree["index"] = self.sfxShree["im"].tell()
+		self.bootGif = blitterbike.BLITTER_BIKE_PATH + "/gifs/play.gif"
 
 		self.sfxWub = {}
-		self.sfxWub["im"] = Image.open("/home/bhall/dev/gifs/sfx/wub.gif")
+		self.sfxWub["im"] = Image.open(blitterbike.BLITTER_BIKE_PATH + "/gifs/sfx/wub.gif")
 		self.sfxWub["isFirst"] = False
 		self.sfxWub["index"] = self.sfxWub["im"].tell()
 
 		self.sfxUnce = {}
-		self.sfxUnce["im"] = Image.open("/home/bhall/dev/gifs/sfx/unce.gif")
+		self.sfxUnce["im"] = Image.open(blitterbike.BLITTER_BIKE_PATH + "/gifs/sfx/unce.gif")
 		self.sfxUnce["isFirst"] = False
 		self.sfxUnce["index"] = self.sfxUnce["im"].tell()
 
 		self.sfxDrop = {}
-		self.sfxDrop["im"] = Image.open("/home/bhall/dev/gifs/sfx/drop.gif")
+		self.sfxDrop["im"] = Image.open(blitterbike.BLITTER_BIKE_PATH + "/gifs/sfx/drop.gif")
 		self.sfxDrop["isFirst"] = False
 		self.sfxDrop["index"] = self.sfxDrop["im"].tell()				
 
@@ -57,7 +52,7 @@ class PlayMode (blitterbike.BlitterBikeMode):
 		self.sfxQueue = []
 
 		log.msg("PLAY MODE")
-		self.gifList = glob.glob("/home/bhall/dev/gifs/play/*.gif")
+		self.gifList = glob.glob(blitterbike.BLITTER_BIKE_PATH  + "/gifs/play/*.gif")
 		random.shuffle(self.gifList, random.random)
 
 		log.msg(self.gifList)
@@ -162,23 +157,23 @@ class PlayMode (blitterbike.BlitterBikeMode):
 
 			self.updateFlag = True
 
-		if button == blitterbike.SPECIAL_BUTTON:
+		if button == blitterbike.A_BUTTON:
 			self.mirrorFlag = not self.mirrorFlag
 
 		if button == blitterbike.G_BUTTON:
 			self.strobeFlag = True
 			self.strobeColor = (random.randint(0,255), random.randint(0, 255), random.randint(0, 255))
 
-		if button == blitterbike.H_BUTTON:
+		if button == blitterbike.E_BUTTON:
 			self.flipFlag = not self.flipFlag
 
 		if button == blitterbike.D_BUTTON:
 			self.scratchFlag = True
 
-		if button == blitterbike.C_BUTTON:
+		if button == blitterbike.H_BUTTON:
 			self.invertFlag = not self.invertFlag
 
-		if button == blitterbike.A_BUTTON:
+		if button == blitterbike.F_BUTTON:
 			self.sfxUnce["im"].seek(0)
 			self.sfxUnce["isFirst"] = True
 			self.sfxUnce["frame"] = self.sfxUnce["im"].convert("RGBA")
@@ -190,13 +185,7 @@ class PlayMode (blitterbike.BlitterBikeMode):
 			self.sfxWub["frame"] = self.sfxWub["im"].convert("RGBA")			
 			self.sfxQueue.append(self.sfxWub)	
 
-		if button == blitterbike.E_BUTTON:
-			self.sfxShree["im"].seek(0)
-			self.sfxShree["isFirst"] = True
-			self.sfxShree["frame"] = self.sfxShree["im"].convert("RGBA")			
-			self.sfxQueue.append(self.sfxShree)	
-
-		if button == blitterbike.F_BUTTON:
+		if button == blitterbike.C_BUTTON:
 			self.sfxDrop["im"].seek(0)
 			self.sfxDrop["isFirst"] = True
 			self.sfxDrop["frame"] = self.sfxDrop["im"].convert("RGBA")	
@@ -204,7 +193,7 @@ class PlayMode (blitterbike.BlitterBikeMode):
 
 	def onButtonUp(self, button):
 
-		if button == blitterbike.A_BUTTON:
+		if button == blitterbike.F_BUTTON:
 			try:
 				self.sfxQueue.remove(self.sfxUnce)
 			except:
@@ -216,13 +205,7 @@ class PlayMode (blitterbike.BlitterBikeMode):
 			except:
 				pass
 
-		if button == blitterbike.E_BUTTON:
-			try:
-				self.sfxQueue.remove(self.sfxShree)	
-			except:
-				pass
-
-		if button == blitterbike.F_BUTTON:
+		if button == blitterbike.C_BUTTON:
 			try:
 				self.sfxQueue.remove(self.sfxDrop)
 			except:

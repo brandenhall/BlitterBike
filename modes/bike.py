@@ -16,8 +16,8 @@ class BikeMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
 		self.fullSpeed = 90.0;
-		self.bootGif = "/home/bhall/dev/gifs/bike.gif"
-		self.gifPath = "/home/bhall/dev/gifs/bike/"
+		self.bootGif = blitterbike.BLITTER_BIKE_PATH  + "/gifs/bike.gif"
+		self.gifPath = blitterbike.BLITTER_BIKE_PATH + "/gifs/bike/"
 		self.im = None
 		self.gifList = []
 		self.gifList.append({"gif":"boo.gif", "step":12, "wait":100, "loops":[{"speed":0.05, "start":0, "end":0}, {"speed":1.0, "start":1, "end":26}]})
@@ -148,19 +148,16 @@ class BikeMode (blitterbike.BlitterBikeMode):
 
 			self.updateFlag = True
 
-		if button == blitterbike.SPECIAL_BUTTON:
+		if button == blitterbike.A_BUTTON:
 			self.mirrorFlag = not self.mirrorFlag
 
-		if button == blitterbike.G_BUTTON:
-			pass
-
-		if button == blitterbike.H_BUTTON:
+		if button == blitterbike.E_BUTTON:
 			self.flipFlag = not self.flipFlag
 
 		if button == blitterbike.D_BUTTON:
 			self.scratchFlag = True
 
-		if button == blitterbike.C_BUTTON:
+		if button == blitterbike.H_BUTTON:
 			self.invertFlag = not self.invertFlag		
 
 
