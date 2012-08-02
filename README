@@ -1,3 +1,14 @@
 This is the code to run the BlitterBike art project.
-
 http://blitterbike.tumblr.com
+http://www.facebook.com/blitterbike
+--
+
+Each "mode" inside of the modes folder is a standalone "app" for the BlitterBike. Modes must extend the BlitterBikeMode class found in blitterbike.py.
+
+If a mode provides a property named self.bootImage and it points to a GIF file, that file will be displayed when the user first starts the mode. Otherwise the mode can override the boot method to do what (if anything) it wants to do on boot. Upon the completion of booting it must set self.isBooting to false and call self.start().
+
+The important methods modes must implement are start, stop, update, onButtonDown and onButtonUp. The start and stop methods are pretty self explanitory. The update method is called whenever the screen is ready to do an update. An implementation of update must either return None (which will keep the screen as is) or must provide a 1024 element list of 3-tuples (red, green, blue). The PIL Image module's getdata method works fine for doing this.
+
+The onButtonDown and onButtonUp methods are called when the user manipulates the joystick. These methods are passed the ID of the button which can be matched to constants inside of blitterbike.py.
+
+Currently to run this code you must be have a BlitterBike... which as far as I know, only I do. I'm currently working on adding a simulator to the code so you can actually run and test code without the dependency of being me.
