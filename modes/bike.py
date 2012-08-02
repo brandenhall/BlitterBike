@@ -15,7 +15,7 @@ except ImportError:
 class BikeMode (blitterbike.BlitterBikeMode):
 
 	def __init__(self):
-		self.fullSpeed = 90.0;
+		self.fullSpeed = 130.0;
 		self.bootGif = blitterbike.BLITTER_BIKE_PATH  + "/gifs/bike.gif"
 		self.gifPath = blitterbike.BLITTER_BIKE_PATH + "/gifs/bike/"
 		self.im = None
@@ -25,7 +25,6 @@ class BikeMode (blitterbike.BlitterBikeMode):
 		self.gifList.append({"gif":"mario.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":2}]})
 		self.gifList.append({"gif":"megaman.gif", "step":12, "wait":300, "loops":[{"speed":0.02, "start":0, "end":6}, {"speed":0.65, "start":7, "end":10}, {"speed":1.0, "start":11, "end":29}]})
 		self.gifList.append({"gif":"nyan.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":11}]})
-		self.gifList.append({"gif":"pony_gallop.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":5}]})
 		self.gifList.append({"gif":"pony_run.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":3}]})
 		self.gifList.append({"gif":"rabbit.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":7}]})
 		self.gifList.append({"gif":"samus.gif", "step":12, "wait":100, "loops":[{"speed":1.0, "start":0, "end":9}]})
